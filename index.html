@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic OPML Outline</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.opml/1.0.0/jquery.opml.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    ul { list-style-type: none; }
+    li { margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <h1>Dynamic OPML Outline</h1>
+  <div id="opml-outline"></div>
+  <script>
+    $(document).ready(function() {
+      $.get('sentences.opml', function(opml) {
+        $('#opml-outline').append(opmlToHtml(opml));
+      });
+      
+      function opmlToHtml(opml) {
+        let html = '<ul>';
+        $(opml).find('outline').each(function() {
+          html += `<li>${$(this).attr('text')}`;
+          if ($(this).children().length > 0) {
+            html += opmlToHtml($(this));
+          }
+          html += '</li>';
+        });
+        html += '</ul>';
+        return html;
+      }
+    });
+  </script>
+</body>
+</html>
